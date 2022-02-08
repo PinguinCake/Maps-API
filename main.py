@@ -6,6 +6,7 @@ from static_map import request_static_map
 LAT_STEP = 0.008  # Шаги при движении карты по широте и долготе
 LON_STEP = 0.002
 
+
 class MapParams(object):
     """
     Параметры подгружаемой карты
@@ -17,12 +18,18 @@ class MapParams(object):
         self.delta = None
         self.zoom = '7'
         self.type = "map"
-        self.search_result = None  # Найденный объект для отображения на карте.
+        self.search_result = None
         self.use_postal_code = False
 
     def update(self, event):
         if event.key == pygame.K_LEFT:
             self.lon = str(float(self.lon) - LON_STEP * 2 ** (15 - float(self.zoom)))
+        elif event.key == pygame.K_PAGEUP:
+            if int(self.zoom) < 20:
+                self.zoom = int(self.zoom) + 1
+        elif event.key == pygame.K_PAGEDOWN:
+            if int(self.zoom) > 1:
+                self.zoom = int(self.zoom) - 1
 
     def search_toponym(self, address):
         code, toponym = geocoder.request_toponym(address)
