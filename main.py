@@ -18,12 +18,22 @@ class MapParams(object):
         self.delta = None
         self.zoom = '7'
         self.type = "map"
-        self.search_result = None
+        self.search_result = None  # Найденный объект для отображения на карте.
         self.use_postal_code = False
 
     def update(self, event):
         if event.key == pygame.K_LEFT:
-            self.lon = str(float(self.lon) - LON_STEP * 2 ** (15 - float(self.zoom)))
+            if -180 <= float(self.lon) - LON_STEP * 2 ** (15 - float(self.zoom)) <= 180:
+                self.lon = str(float(self.lon) - LON_STEP * 2 ** (15 - float(self.zoom)))
+        elif event.key == pygame.K_RIGHT:
+            if -180 <= float(self.lon) + LON_STEP * 2 ** (15 - float(self.zoom)) <= 180:
+                self.lon = str(float(self.lon) + LON_STEP * 2 ** (15 - float(self.zoom)))
+        elif event.key == pygame.K_DOWN:
+            if -86 <= float(self.lat) - LAT_STEP * 2 ** (15 - float(self.zoom)) <= 90:
+                self.lat = str(float(self.lat) - LAT_STEP * 2 ** (15 - float(self.zoom)))
+        elif event.key == pygame.K_UP:
+            if -90 <= float(self.lat) + LAT_STEP * 2 ** (15 - float(self.zoom)) <= 86:
+                self.lat = str(float(self.lat) + LAT_STEP * 2 ** (15 - float(self.zoom)))
         elif event.key == pygame.K_PAGEUP:
             if int(self.zoom) < 20:
                 self.zoom = int(self.zoom) + 1
