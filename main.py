@@ -17,7 +17,8 @@ class MapParams(object):
         self.lat = '55.753630'
         self.delta = None
         self.zoom = '7'
-        self.type = "map"
+        self.types = ['map', 'sat', 'sat,skl']
+        self.type = self.types[0]
         self.search_result = None
         self.use_postal_code = False
 
@@ -41,6 +42,11 @@ class MapParams(object):
         elif event.key == pygame.K_PAGEDOWN:
             if int(self.zoom) > 0:
                 self.zoom = int(self.zoom) - 1
+        elif event.key == pygame.K_SPACE:
+            if self.types.index(self.type) < 2:
+                self.type = self.types[self.types.index(self.type) + 1]
+            else:
+                self.type = self.types[0]
 
     def search_toponym(self, address):
         code, toponym = geocoder.request_toponym(address)
