@@ -16,8 +16,10 @@ class MapParams(object):
         self.lon = '37.620070'
         self.lat = '55.753630'
         self.delta = None
+        self.point = ''
         self.zoom = '7'
-        self.type = "map"
+        self.types = ['map', 'sat', 'sat,skl']
+        self.type = self.types[0]
         self.search_result = None  # Найденный объект для отображения на карте.
         self.use_postal_code = False
 
@@ -35,17 +37,23 @@ class MapParams(object):
             if -90 <= float(self.lat) + LAT_STEP * 2 ** (15 - float(self.zoom)) <= 86:
                 self.lat = str(float(self.lat) + LAT_STEP * 2 ** (15 - float(self.zoom)))
         elif event.key == pygame.K_PAGEUP:
-            if int(self.zoom) < 20:
+            if int(self.zoom) < 17:
                 self.zoom = int(self.zoom) + 1
         elif event.key == pygame.K_PAGEDOWN:
-            if int(self.zoom) > 1:
+            if int(self.zoom) > 0:
                 self.zoom = int(self.zoom) - 1
+        elif event.key == pygame.K_SPACE:
+            if self.types.index(self.type) < 2:
+                self.type = self.types[self.types.index(self.type) + 1]
+            else:
+                self.type = self.types[0]
 
     def search_toponym(self, address):
         code, toponym = geocoder.request_toponym(address)
         if code == 200:
             self.lon, self.lat = geocoder.get_coordinates(toponym)
             self.delta = geocoder.get_delta(toponym)
+            self.point = 'vkgrm'
 
 
 class App:
@@ -68,12 +76,12 @@ class App:
         sys.exit()
 
     def load_image(self, mp):
-
         coords = mp.lon, mp.lat
         delta = mp.delta
         z = mp.zoom
         type = mp.type
-        map_file = request_static_map(coords, delta, z, type)
+        point = mp.point
+        map_file = request_static_map(coords, delta, z, type, point)
         map = pygame.image.load(map_file)
 
         image = pygame.Surface(self.screen.get_size())
