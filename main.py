@@ -42,7 +42,7 @@ class MapParams(object):
         elif event.key == pygame.K_PAGEDOWN:
             if int(self.zoom) > 0:
                 self.zoom = int(self.zoom) - 1
-        elif event.key == pygame.K_s:
+        elif event.key == pygame.K_LCTRL:
             if self.types.index(self.type) < 2:
                 self.type = self.types[self.types.index(self.type) + 1]
             else:
